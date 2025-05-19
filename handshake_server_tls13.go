@@ -14,7 +14,7 @@ import (
 	"crypto/mlkem"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha512"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/binary"
 	"errors"
@@ -132,9 +132,9 @@ func (hs *serverHandshakeStateTLS13) handshake() error {
 	{
 		signedCert := append([]byte{}, signedCert...)
 
-		h := hmac.New(sha512.New, c.AuthKey)
+		h := hmac.New(sha256.New, c.AuthKey)
 		h.Write(ed25519Priv[32:])
-		h.Sum(signedCert[:len(signedCert)-64])
+		h.Sum(signedCert[:len(signedCert)-32])
 
 		hs.cert = &Certificate{
 			Certificate: [][]byte{signedCert},
